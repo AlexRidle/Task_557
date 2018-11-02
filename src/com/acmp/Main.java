@@ -6,31 +6,38 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Main {
 
-    private static StringBuilder inputText = new StringBuilder();
-    private static String[] numbers;
+    private static ArrayList<String> number = new ArrayList<>();
     private static int matCount;
     private static int matSize;
     private static int numberP;
     private static int[] annNumIJ = new int[2];
-    private static int counter = 0;
-    private static int[][][] matrices;
     private static int[][] currentMatrix;
 
     public static void main(String[] args) throws IOException, CustomException {
-        readFile();
+
+        BufferedReader br = new BufferedReader(new FileReader("INPUT.txt"));
+
+        matCount = getNextNumberFromFile(br);
+        matSize = getNextNumberFromFile(br);
+        annNumIJ[0] = getNextNumberFromFile(br);
+        annNumIJ[1] = getNextNumberFromFile(br);
+        numberP = getNextNumberFromFile(br);
+
         checkRules();
-        getAnnNum();
+        getAnnNum(br);
         writeFile();
     }
 
-    private static void getAnnNum() {
-        loadMatrix();
-        currentMatrix = matrices[0];
+    private static void getAnnNum(BufferedReader br) throws IOException {
+        br.readLine();
+        currentMatrix = loadMatrix(br);
         for (int i = 1; i < matCount; i++) {
-            currentMatrix = multiplyMatrix(matrices[i]);
+            currentMatrix = multiplyMatrix(loadMatrix(br));
         }
     }
 
@@ -52,17 +59,32 @@ public class Main {
         return resultMat;
     }
 
-    private static void loadMatrix() {
-        counter++;
-        for (int matNum = 0; matNum < matCount; matNum++) {
-            for (int matColumn = 0; matColumn < matSize; matColumn++) {
-                for (int matLine = 0; matLine < matSize; matLine++) {
-                    matrices[matNum][matColumn][matLine] = Integer.parseInt(numbers[counter]);
-                    counter++;
-                }
+    private static int getNextNumberFromFile(BufferedReader br) throws IOException {
+        String line;
+        String[] currentNumbers;
+        StringBuilder inputText = new StringBuilder();
+        int result;
+        if (number.isEmpty()) {
+            if ((line = br.readLine()) != null) {
+                inputText.append(line);
+                currentNumbers = inputText.toString().split(" ");
+                Collections.addAll(number, currentNumbers);
             }
-            counter++;
         }
+        result = Integer.parseInt(number.get(0));
+        number.remove(0);
+        return result;
+    }
+
+    private static int[][] loadMatrix(BufferedReader br) throws IOException {
+        int[][] tempMatrix = new int[matSize][matSize];
+        for (int matColumn = 0; matColumn < matSize; matColumn++) {
+            for (int matLine = 0; matLine < matSize; matLine++) {
+                tempMatrix[matColumn][matLine] = getNextNumberFromFile(br);
+            }
+        }
+        br.readLine();
+        return tempMatrix;
     }
 
     private static void checkRules() throws CustomException {
@@ -76,22 +98,6 @@ public class Main {
         }
     }
 
-    private static void readFile() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("INPUT.txt"));
-        String line;
-        while ((line = br.readLine()) != null) {
-            inputText.append(line);
-            inputText.append(" ");
-        }
-        numbers = inputText.toString().split(" ");
-        matCount = Integer.parseInt(numbers[counter++]);
-        matSize = Integer.parseInt(numbers[counter++]);
-        annNumIJ[0] = Integer.parseInt(numbers[counter++]);
-        annNumIJ[1] = Integer.parseInt(numbers[counter++]);
-        numberP = Integer.parseInt(numbers[counter++]);
-        matrices = new int[matCount][matSize][matSize];
-    }
-
     private static void writeFile() {
         File file = new File("OUTPUT.txt");
         PrintWriter writer = null;
@@ -101,6 +107,7 @@ public class Main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
+            assert writer != null;
             writer.flush();
             writer.close();
         }
@@ -111,7 +118,7 @@ public class Main {
 
 class CustomException extends Exception {
 
-    public CustomException(String message) {
+    CustomException(String message) {
         super(message);
     }
 
