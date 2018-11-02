@@ -6,12 +6,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 
 public class Main {
 
-    private static ArrayList<String> number = new ArrayList<>();
+    private static LinkedList<String> number = new LinkedList<>();
     private static int matCount;
     private static int matSize;
     private static int numberP;
@@ -68,7 +67,9 @@ public class Main {
             if ((line = br.readLine()) != null) {
                 inputText.append(line);
                 currentNumbers = inputText.toString().split(" ");
-                Collections.addAll(number, currentNumbers);
+                for (String num : currentNumbers) {
+                    number.add(num);
+                }
             }
         }
         result = Integer.parseInt(number.get(0));
@@ -107,7 +108,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
-            assert writer != null;
             writer.flush();
             writer.close();
         }
