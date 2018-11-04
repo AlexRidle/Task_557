@@ -43,16 +43,16 @@ public class Main {
     private static int[][] multiplyMatrix(int[][] matrix) {
         int number;
         int[][] resultMat = new int[matSize][matSize];
-            for (int matColumn = 0; matColumn < matSize; matColumn++) {
-                number = 0;
-                for (int counter = 0; counter < matSize; counter++) {
-                    number += currentMatrix[annNumIJ[0]-1][counter] * matrix[counter][matColumn];
-                }
-                if (number >= numberP) {
-                    number %= numberP;
-                }
-                resultMat[annNumIJ[0]-1][matColumn] = number;
+        for (int matColumn = 0; matColumn < matSize; matColumn++) {
+            number = 0;
+            for (int counter = 0; counter < matSize; counter++) {
+                number += currentMatrix[annNumIJ[0] - 1][counter] * matrix[counter][matColumn];
             }
+            if (number >= numberP) {
+                number %= numberP;
+            }
+            resultMat[annNumIJ[0] - 1][matColumn] = number;
+        }
         return resultMat;
     }
 
